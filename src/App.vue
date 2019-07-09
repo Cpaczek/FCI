@@ -1,7 +1,9 @@
 <template>
   <div id="app">
+    <!--Update Info and Confirm Modal-->
     <vUpdate ref="update"></vUpdate>
     <vConfirm ref="confirm"></vConfirm>
+    <!--Enter Last Name Input Box-->
     <section class="section">
       <div class="container">
         <div class="has-text-centered">
@@ -40,11 +42,13 @@
       vConfirm
     },
     mounted () {
+//        Clears input when "clear" event is triggered
       EventBus.$on('clear', () => {
           this.inputlname ="";
       });
     },
     methods: {
+//        Triggers Event when they submit their last name popping up the confirm modal
       submitLname(){
           console.log("emit to vconfirm")
           let payload = this.inputlname;
@@ -62,6 +66,7 @@
 
   .modal-content {
     width: 100%;
+    padding-bottom: 450px !important;
   }
 
   h1 {

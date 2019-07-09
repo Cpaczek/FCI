@@ -133,13 +133,17 @@
     },
     //Populate Modal With Data
     mounted () {
-      this.ip = this.getUrlVars()["ip"];
+// Get the ip from url
+      if (!this.getUrlVars()["ip"] === undefined) {
+        this.ip = this.getUrlVars()["ip"];
+      }
       console.log(this.ip)
       EventBus.$on('FillInfo', (payload) => {
         this.showModal = true;
         this.patnum = payload;
 
         let _this = this;
+//        Grab patient information for them to update and put into a json array and local vars to compare what they changed later
         axios.get('http://'+ this.ip + '/patients/' + this.patnum)
           .then(function (response) {
             console.log(response + "updateFill")
@@ -177,6 +181,7 @@
 
     methods: {
       updateInfo(){
+//          Checks some requirements to make sure new information is valid
         let phoneReg = /^[\\(]{0,1}([0-9]){3}[\\)]{0,1}[ ]?([^0-1]){1}([0-9]){2}[ ]?[-]?[ ]?([0-9]){4}[ ]*((x){0,1}([0-9]){1,5}){0,1}$/
         if (!this.cell.match(phoneReg) && !this.work.match(phoneReg) && !this.home.match(phoneReg)) {
           Swal.fire('Oops...', 'Invalid or No phone number (format is (xxx)xxx-xxxx', 'error')
@@ -196,6 +201,7 @@
         }
         this.showModal = false;
         let _this = this;
+//        Put request to update the patient information
         axios.put('http://'+ this.ip + '/patients/' + _this.patnum, {
           PreferConfirmMethod: _this.confirmSelected,
           PreferRecallMethod: _this.recallSelected,
@@ -216,6 +222,7 @@
               'Thank you, you will be called shortly',
               'success'
             );
+//            Clear all data for next user
             EventBus.$emit('clear')
           })
           .catch(function (error) {

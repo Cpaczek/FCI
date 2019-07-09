@@ -58,14 +58,20 @@
 
     },
     mounted () {
-       this.ip = this.getUrlVars()["ip"];
+//        Grab the IP if there is one in the url
+      if (!this.getUrlVars()["ip"] === undefined) {
+        this.ip = this.getUrlVars()["ip"];
+      }
+//      Loop throught all of the appointments and filter them by the inputed last name
       EventBus.$on('UpdateAppts', (payload) => {
+//          Start the loading animation
         this.loading = true;
         console.log("listened")
         console.log(payload + " - payload")
+//        Popup the modal
         this.showModal = true;
 
-
+//      Declare this pointer because inside axios this refers the the response (or something else idk what exactly this refers to in axios)
         let _this = this;
         axios.get('http://'+ this.ip + '/appointments/')
           .then(function (response) {
@@ -77,6 +83,7 @@
               if (obj.LName.toLowerCase() === payload.toLowerCase()) {
                 console.log("FName" + obj.FName);
                 console.log("parsed" + Date.parse(obj.AptDateTime))
+//                Push patient data to appts array
                 _this.appts.push({
                   "First": obj.FName,
                   "Last": obj.LName,
@@ -90,11 +97,12 @@
 
               console.log(obj);
             }
+//            Make sure there is an appointment in the databse
             if (_this.appts.length < 1) {
               Swal.fire("No appointments!", "No appointments were found for the given last name. Please check your spelling and try again.", "error",);
-            } else {
-              _this.isActive = true;
+              _this.showModal = false;
             }
+//            disable loading
             _this.loading = false;
 
 
@@ -109,6 +117,7 @@
       })
     },
     methods: {
+//        This function confirms the appointment
       confirm(aptnum, patnum){
         this.$store.commit('setPatId', patnum)
         let _this = this;
@@ -117,6 +126,7 @@
             // handle success
             console.log(response);
             let payload = patnum;
+//            Triggers even for next modal for fill the update information fields (vUpdate)
             EventBus.$emit('FillInfo', payload)
             _this.showModal = false;
             _this.appts = [];
@@ -132,10 +142,12 @@
             // always executed
           });
       },
+//      Allows for the use of the cancel button
       clear(){
         EventBus.$emit('clear')
         this.showModal = false;
       },
+//      Logic to get the url vars
       getUrlVars() {
         let vars = {};
         let parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function (m, key, value) {
@@ -144,7 +156,7 @@
         return vars;
       },
 
-
+// Formats time into a human readable format (this is time zone specific so make sure your timezone if properley set on your device)
       getTimeFromDate(date) {
         let hours = date.getHours();
         let minutes = date.getMinutes();
