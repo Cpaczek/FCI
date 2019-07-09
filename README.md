@@ -1,6 +1,6 @@
-# fciv2
+# Fast Check In for Exeter Dental Office
 
-> A Vue.js project
+> This project is designed to allow clients to beable to check their selfs in without talking to a receptionist. All they have to do is input their last name and they will be able to check in and update their information. This project is built on Vue JS and VueX.
 
 ## Build Setup
 
