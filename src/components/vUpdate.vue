@@ -118,6 +118,8 @@
         address: "",
         address2: "",
 
+        ip: "10.12.0.1:3000",
+
         currentPat: [],
 
         patnum: 0,
@@ -131,12 +133,14 @@
     },
     //Populate Modal With Data
     mounted () {
+      this.ip = this.getUrlVars()["ip"];
+      console.log(this.ip)
       EventBus.$on('FillInfo', (payload) => {
         this.showModal = true;
         this.patnum = payload;
 
         let _this = this;
-        axios.get('http://10.12.0.1:3000/patients/' + this.patnum)
+        axios.get('http://'+ this.ip + '/patients/' + this.patnum)
           .then(function (response) {
             console.log(response + "updateFill")
             _this.currentPat.push({
@@ -192,7 +196,7 @@
         }
         this.showModal = false;
         let _this = this;
-        axios.put('http://10.12.0.1:3000/patients/' + _this.patnum, {
+        axios.put('http://'+ this.ip + '/patients/' + _this.patnum, {
           PreferConfirmMethod: _this.confirmSelected,
           PreferRecallMethod: _this.recallSelected,
           PreferContactMethod: _this.contactSelected,
@@ -223,7 +227,14 @@
 
           });
 
-      }
+      },
+      getUrlVars() {
+        let vars = {};
+        let parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function (m, key, value) {
+          vars[key] = value;
+        });
+        return vars;
+      },
     }
   }
 

@@ -4,7 +4,9 @@
       <div class="modal-background"></div>
       <div class="modal-content">
         <div v-if="loading" style="display:flex;">
-          <div class="lds-circle"><div></div></div>
+          <div class="lds-circle">
+            <div></div>
+          </div>
         </div>
         <table class="table is-bordered">
           <thead>
@@ -49,21 +51,23 @@
         appts: [],
         loading: false,
         showModal: false,
+        ip: "10.12.0.1:3000"
 
       }
 
 
     },
     mounted () {
+       this.ip = this.getUrlVars()["ip"];
       EventBus.$on('UpdateAppts', (payload) => {
-          this.loading = true;
+        this.loading = true;
         console.log("listened")
         console.log(payload + " - payload")
         this.showModal = true;
 
 
         let _this = this;
-        axios.get('http://10.12.0.1:3000/appointments')
+        axios.get('http://'+ this.ip + '/appointments/')
           .then(function (response) {
             console.log(response);
             for (let i = 0; i < response.data.length; i++) {
@@ -91,7 +95,7 @@
             } else {
               _this.isActive = true;
             }
-            _this.loading=false;
+            _this.loading = false;
 
 
           })
@@ -108,7 +112,7 @@
       confirm(aptnum, patnum){
         this.$store.commit('setPatId', patnum)
         let _this = this;
-        axios.post('http://10.12.0.1:3000/appointments/confirm/' + aptnum)
+        axios.post('http://'+ this.ip + '/appointments/confirm/' + aptnum)
           .then(function (response) {
             // handle success
             console.log(response);
@@ -130,22 +134,28 @@
       },
       clear(){
         EventBus.$emit('clear')
-        this.showModal=false;
+        this.showModal = false;
+      },
+      getUrlVars() {
+        let vars = {};
+        let parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function (m, key, value) {
+          vars[key] = value;
+        });
+        return vars;
       },
 
 
-
-    getTimeFromDate(date) {
-      let hours = date.getHours();
-      let minutes = date.getMinutes();
-      let ampm = hours >= 12 ? 'pm' : 'am';
-      hours = hours % 12;
-      hours = hours ? hours : 12; // the hour '0' should be '12'
-      minutes = minutes < 10 ? '0' + minutes : minutes;
-      let strTime = hours + ':' + minutes + ' ' + ampm;
-      return strTime;
+      getTimeFromDate(date) {
+        let hours = date.getHours();
+        let minutes = date.getMinutes();
+        let ampm = hours >= 12 ? 'pm' : 'am';
+        hours = hours % 12;
+        hours = hours ? hours : 12; // the hour '0' should be '12'
+        minutes = minutes < 10 ? '0' + minutes : minutes;
+        let strTime = hours + ':' + minutes + ' ' + ampm;
+        return strTime;
+      }
     }
-  }
 
 
   }
@@ -156,6 +166,7 @@
     transform: translateZ(1px);
     margin: auto
   }
+
   .lds-circle > div {
     display: inline-block;
     width: 51px;
@@ -165,6 +176,7 @@
     background: #000000;
     animation: lds-circle 2.4s cubic-bezier(0, 0.2, 0.8, 1) infinite;
   }
+
   @keyframes lds-circle {
     0%, 100% {
       animation-timing-function: cubic-bezier(0.5, 0, 1, 0.5);
