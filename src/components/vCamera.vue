@@ -173,7 +173,7 @@
             _this.img = null;
             Swal.fire(
               'Confirmed',
-              'Profile Picture Set',
+              'Thank you, you will be called shortly',
               'success'
             );
 //            Clear all data for next user

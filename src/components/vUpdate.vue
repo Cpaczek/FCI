@@ -7,6 +7,8 @@
 
           <h1>Update Info</h1>
 
+          <img style="position: absolute;top: 0px;right: 0px;" width="100px" v-if="this.patnum != 0" :src="imgSrc" alt="">
+
           <div class="columns">
             <div class="column is-one-third">
               <label>Preferred Contact Method</label>
@@ -78,7 +80,6 @@
           </div>
         </div>
         <div class="has-text-centered">
-          <a href="#" class="button" @click="openCamera">Update Profile Picture</a>
           <a href="#" class="button" style="margin-top: 15px;" @click="updateInfo">Update Info</a>
         </div>
       </div>
@@ -131,6 +132,9 @@
     computed: {
       getPatId(){
         return this.$store.getters.getPatId
+      },
+      imgSrc: function(){
+        return 'http://' + this.ip + '/patients/' + this.patnum + '/photo?auth=' + this.key + "&rand=" + Math.random()
       }
     },
     //Populate Modal With Data
@@ -225,12 +229,8 @@ console.log(this.key + "superdooper")
             console.log(response)
             console.log(_this.patnum)
             _this.showModal = false;
-            _this.$store.commit('setPatId', 0)
-            Swal.fire(
-              'Confirmed',
-              'Thank you, you will be called shortly',
-              'success'
-            );
+            _this.openCamera();
+
 //            Clear all data for next user
             EventBus.$emit('clear')
           })
@@ -251,7 +251,7 @@ console.log(this.key + "superdooper")
         });
         return vars;
       },
-    }
+    },
   }
 
 

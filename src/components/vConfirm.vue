@@ -21,7 +21,7 @@
           <tr v-for="appt in appts">
             <td>{{appt.Time}}</td>
             <td>{{appt.First}} {{appt.Last}}</td>
-            <td v-if="appt.conf < 268 || appt.conf > 268"><a class="button" @click="confirm(appt.apt, appt.patid)">Check In</a>
+            <td v-if="appt.conf < 266 || appt.conf > 268"><a class="button" @click="confirm(appt.apt, appt.patid)">Check In</a>
             </td>
             <td v-else><a class="button" disabled>Checked In</a></td>
           </tr>
