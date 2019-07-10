@@ -25,7 +25,7 @@
             </button>
             <button type="button"
                     class="button"
-                    @click="cancelWebcam">Cancel
+                    @click="cancelWebcam">Skip
             </button>
           </div>
         </div>
@@ -109,10 +109,10 @@
     methods: {
       selectCamera(){
         this.onStart()
-        try{
+        try {
           this.deviceId = this.devices[this.getUrlVars()["camid"]].deviceId
-        }catch(e){
-            console.warn("there was an error fetching device id (but its ok it still works for some reason)")
+        } catch (e) {
+          console.warn("there was an error fetching device id (but its ok it still works for some reason)")
         }
 
         this.camera = this.deviceId
@@ -134,11 +134,11 @@
         this.$refs.webcam.stop();
       },
       onStart() {
-          try{
-            this.$refs.webcam.start();
-          }catch(e){
-            console.warn("there was an error fetching webcam start (but its ok it still works for some reason)")
-          }
+        try {
+          this.$refs.webcam.start();
+        } catch (e) {
+          console.warn("there was an error fetching webcam start (but its ok it still works for some reason)")
+        }
 
       },
       onError(error) {
@@ -161,7 +161,7 @@
         return vars;
       },
       uploadPhoto(){
-          console.log(this.img)
+        console.log(this.img)
         let _this = this;
         axios.post('http://' + this.ip + '/patients/' + this.patnum + "/photo", {
           photo: _this.img,
@@ -180,7 +180,7 @@
             EventBus.$emit('clear')
           })
           .catch(function (error) {
-              console.log(error)
+            console.log(error)
             Swal.fire('Oops...', 'Something went wrong! Please talk to receptionist', 'error')
             EventBus.$emit('clear')
 
