@@ -78,6 +78,7 @@
           </div>
         </div>
         <div class="has-text-centered">
+          <a href="#" class="button" @click="openCamera">Update Profile Picture</a>
           <a href="#" class="button" style="margin-top: 15px;" @click="updateInfo">Update Info</a>
         </div>
       </div>
@@ -119,6 +120,7 @@
         address2: "",
 
         ip: "10.12.0.1:3000",
+        key: "",
 
         currentPat: [],
 
@@ -137,14 +139,18 @@
       if (!this.getUrlVars()["ip"] === undefined) {
         this.ip = this.getUrlVars()["ip"];
       }
+        this.key = this.getUrlVars()["key"];
+
       console.log(this.ip)
+      console.log(this.key + "update Key")
       EventBus.$on('FillInfo', (payload) => {
         this.showModal = true;
         this.patnum = payload;
 
         let _this = this;
+console.log(this.key + "superdooper")
 //        Grab patient information for them to update and put into a json array and local vars to compare what they changed later
-        axios.get('http://'+ this.ip + '/patients/' + this.patnum)
+        axios.get('http://'+ this.ip + '/patients/' + this.patnum, {headers: {Authorization: "FCI Key " + this.key}})
           .then(function (response) {
             console.log(response + "updateFill")
             _this.currentPat.push({
@@ -180,6 +186,10 @@
     },
 
     methods: {
+        openCamera(){
+          EventBus.$emit('openCamera', this.patnum)
+          console.log("open camera emitted")
+        },
       updateInfo(){
 //          Checks some requirements to make sure new information is valid
         let phoneReg = /^[\\(]{0,1}([0-9]){3}[\\)]{0,1}[ ]?([^0-1]){1}([0-9]){2}[ ]?[-]?[ ]?([0-9]){4}[ ]*((x){0,1}([0-9]){1,5}){0,1}$/
@@ -211,7 +221,7 @@
           WkPhone: _this.work,
           Email: _this.email
 
-        })
+        }, {headers: {Authorization: "FCI Key " + this.key}})
           .then(function (response) {
             console.log(response)
             console.log(_this.patnum)

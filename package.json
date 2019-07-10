@@ -14,6 +14,7 @@
     "bulma": "^0.7.5",
     "sweetalert2": "^8.13.0",
     "vue": "^2.5.11",
+    "vue-web-cam": "^1.5.0",
     "vuex": "^3.1.1"
   },
   "browserslist": [

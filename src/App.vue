@@ -3,6 +3,7 @@
     <!--Update Info and Confirm Modal-->
     <vUpdate ref="update"></vUpdate>
     <vConfirm ref="confirm"></vConfirm>
+    <vCamera></vCamera>
     <!--Enter Last Name Input Box-->
     <section class="section">
       <div class="container">
@@ -28,6 +29,7 @@
 
   import vUpdate from './components/vUpdate.vue'
   import vConfirm from './components/vConfirm.vue'
+  import vCamera from './components/vCamera.vue'
   import EventBus from './event-bus'
 
   export default {
@@ -39,7 +41,8 @@
     },
     components: {
       vUpdate,
-      vConfirm
+      vConfirm,
+      vCamera
     },
     mounted () {
 //        Clears input when "clear" event is triggered

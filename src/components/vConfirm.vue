@@ -21,7 +21,7 @@
           <tr v-for="appt in appts">
             <td>{{appt.Time}}</td>
             <td>{{appt.First}} {{appt.Last}}</td>
-            <td v-if="appt.conf < 269 || appt.conf > 268"><a class="button" @click="confirm(appt.apt, appt.patid)">Check In</a>
+            <td v-if="appt.conf < 268 || appt.conf > 268"><a class="button" @click="confirm(appt.apt, appt.patid)">Check In</a>
             </td>
             <td v-else><a class="button" disabled>Checked In</a></td>
           </tr>
@@ -51,7 +51,8 @@
         appts: [],
         loading: false,
         showModal: false,
-        ip: "10.12.0.1:3000"
+        ip: "10.12.0.1:3000",
+        key: null
 
       }
 
@@ -62,6 +63,11 @@
       if (!this.getUrlVars()["ip"] === undefined) {
         this.ip = this.getUrlVars()["ip"];
       }
+
+        this.key = this.getUrlVars()["key"];
+
+      console.log(this.getUrlVars()["key"] + "Direct Key")
+      console.log(this.key +" key")
 //      Loop throught all of the appointments and filter them by the inputed last name
       EventBus.$on('UpdateAppts', (payload) => {
 //          Start the loading animation
@@ -73,16 +79,16 @@
 
 //      Declare this pointer because inside axios this refers the the response (or something else idk what exactly this refers to in axios)
         let _this = this;
-        axios.get('http://'+ this.ip + '/appointments/')
+        axios.get('http://'+ this.ip + '/appointments/', {headers: {Authorization: "FCI Key " + this.key}})
           .then(function (response) {
             console.log(response);
             for (let i = 0; i < response.data.length; i++) {
               let obj = response.data[i];
               console.log('looping');
-              console.log(obj.LName.toLowerCase())
+              console.log(obj.LName.toLowerCase());
               if (obj.LName.toLowerCase() === payload.toLowerCase()) {
                 console.log("FName" + obj.FName);
-                console.log("parsed" + Date.parse(obj.AptDateTime))
+                console.log("parsed" + Date.parse(obj.AptDateTime));
 //                Push patient data to appts array
                 _this.appts.push({
                   "First": obj.FName,
@@ -121,7 +127,8 @@
       confirm(aptnum, patnum){
         this.$store.commit('setPatId', patnum)
         let _this = this;
-        axios.post('http://'+ this.ip + '/appointments/confirm/' + aptnum)
+        console.log(this.key)
+        axios.post('http://'+ this.ip + '/appointments/confirm/' + aptnum, null, {headers: {Authorization: "FCI Key " + this.key}})
           .then(function (response) {
             // handle success
             console.log(response);
