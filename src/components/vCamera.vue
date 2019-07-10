@@ -25,7 +25,7 @@
             </button>
             <button type="button"
                     class="button"
-                    @click="showModal = false; this.img = null">Cancel
+                    @click="cancelWebcam">Cancel
             </button>
           </div>
         </div>
@@ -122,6 +122,10 @@
       },
       onStarted(stream) {
         console.log("On Started Event", stream);
+      },
+      cancelWebcam(){
+        this.showModal = false;
+        this.img = null
       },
       onStopped(stream) {
         console.log("On Stopped Event", stream);
