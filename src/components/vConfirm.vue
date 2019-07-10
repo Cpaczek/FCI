@@ -51,7 +51,7 @@
         appts: [],
         loading: false,
         showModal: false,
-        ip: "10.12.0.1:3000",
+        ip: "",
         key: null
 
       }
@@ -60,10 +60,7 @@
     },
     mounted () {
 //        Grab the IP if there is one in the url
-      if (!this.getUrlVars()["ip"] === undefined) {
         this.ip = this.getUrlVars()["ip"];
-      }
-
         this.key = this.getUrlVars()["key"];
 
       console.log(this.getUrlVars()["key"] + "Direct Key")

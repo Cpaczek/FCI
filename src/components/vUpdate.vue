@@ -136,9 +136,8 @@
     //Populate Modal With Data
     mounted () {
 // Get the ip from url
-      if (!this.getUrlVars()["ip"] === undefined) {
+
         this.ip = this.getUrlVars()["ip"];
-      }
         this.key = this.getUrlVars()["key"];
 
       console.log(this.ip)
