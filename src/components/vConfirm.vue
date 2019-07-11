@@ -65,6 +65,12 @@
 
       console.log(this.getUrlVars()["key"] + "Direct Key")
       console.log(this.key +" key")
+      EventBus.$on('clear', ()=>{
+        this.appts = [];
+        this.loading = false;
+        this.showModal = false;
+      });
+
 //      Loop throught all of the appointments and filter them by the inputed last name
       EventBus.$on('UpdateAppts', (payload) => {
 //          Start the loading animation
@@ -78,14 +84,10 @@
         let _this = this;
         axios.get('http://'+ this.ip + '/appointments/', {headers: {Authorization: "FCI Key " + this.key}})
           .then(function (response) {
-            console.log(response);
+            console.log("Received appt details response from the server as follows: "+response);
             for (let i = 0; i < response.data.length; i++) {
               let obj = response.data[i];
-              console.log('looping');
-              console.log(obj.LName.toLowerCase());
               if (obj.LName.toLowerCase() === payload.toLowerCase()) {
-                console.log("FName" + obj.FName);
-                console.log("parsed" + Date.parse(obj.AptDateTime));
 //                Push patient data to appts array
                 _this.appts.push({
                   "First": obj.FName,
@@ -98,7 +100,6 @@
 
               }
 
-              console.log(obj);
             }
 //            Make sure there is an appointment in the databse
             if (_this.appts.length < 1) {
@@ -112,7 +113,7 @@
           })
           .catch(function (error) {
             Swal.fire('Oops...', 'Something went wrong! Please talk to receptionist ', 'error')
-            console.log(error);
+            console.warn(error);
           })
           .finally(function () {
           });
@@ -124,17 +125,15 @@
       confirm(aptnum, patnum){
         this.$store.commit('setPatId', patnum)
         let _this = this;
-        console.log(this.key)
         axios.post('http://'+ this.ip + '/appointments/confirm/' + aptnum, null, {headers: {Authorization: "FCI Key " + this.key}})
           .then(function (response) {
             // handle success
-            console.log(response);
+            console.log("Confirmation response was: " + response);
             let payload = patnum;
 //            Triggers even for next modal for fill the update information fields (vUpdate)
-            EventBus.$emit('FillInfo', payload)
+            EventBus.$emit('FillInfo', payload);
             _this.showModal = false;
             _this.appts = [];
-
 
           })
           .catch(function (error) {
@@ -148,7 +147,8 @@
       },
 //      Allows for the use of the cancel button
       clear(){
-        EventBus.$emit('clear')
+        EventBus.$emit('clear');
+        this.$store.commit('setPatId', 0);
         this.showModal = false;
       },
 //      Logic to get the url vars
