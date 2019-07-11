@@ -61,7 +61,7 @@
         img: null,
         camera: null,
         deviceId: null,
-        patnum: "",
+        patnum: 0,
         showModal: false,
         ip: null,
         key: null,
@@ -90,15 +90,15 @@
       }
     },
     mounted (){
-
-
+      EventBus.$on('clear', (payload) => {
+        this.patnum = 0;
+        this.showModal = false;
+        this.img = null;
+      });
       EventBus.$on('openCamera', (payload) => {
 
         this.ip = this.getUrlVars()["ip"];
-        console.log(this.ip + "camera ip")
         this.key = this.getUrlVars()["key"];
-        console.log(this.key + "camera key")
-        console.log("open camera recieved")
         this.patnum = payload;
         this.showModal = true;
         this.selectCamera()
@@ -124,8 +124,11 @@
         console.log("On Started Event", stream);
       },
       cancelWebcam(){
-        this.showModal = false;
-        this.img = null
+        Swal.fire(
+          'Confirmed',
+          'Thank you, you will be called shortly',
+          'success'
+        ).then(EventBus.$emit('clear'))
       },
       onStopped(stream) {
         console.log("On Stopped Event", stream);
@@ -169,15 +172,14 @@
         }, {headers: {Authorization: "FCI Key " + this.key}})
           .then(function (response) {
             console.log(response)
-            _this.showModal = false;
-            _this.img = null;
             Swal.fire(
               'Confirmed',
               'Thank you, you will be called shortly',
               'success'
-            );
+            ).then(EventBus.$emit('clear'))
 //            Clear all data for next user
-            EventBus.$emit('clear')
+
+
           })
           .catch(function (error) {
             console.log(error)
